@@ -40,7 +40,7 @@ namespace ManyToMany
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DialogResult result = MessageBox.Show("האם לשמור את השינויים?", "יציאה", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
+            DialogResult result = MessageBox.Show("Exit and save changes?", "Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
             switch (result)
             {
             case DialogResult.Yes:
