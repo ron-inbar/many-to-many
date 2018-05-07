@@ -34,6 +34,8 @@ namespace ManyToMany {
         
         private global::System.Data.DataRelation relationFK_Part_ProductPart;
         
+        private global::System.Data.DataRelation relationFK_Product_Part;
+        
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -45,6 +47,7 @@ namespace ManyToMany {
             base.Tables.CollectionChanged += schemaChangedHandler;
             base.Relations.CollectionChanged += schemaChangedHandler;
             this.EndInit();
+            this.InitExpressions();
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -56,6 +59,9 @@ namespace ManyToMany {
                 global::System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler1 = new global::System.ComponentModel.CollectionChangeEventHandler(this.SchemaChanged);
                 this.Tables.CollectionChanged += schemaChangedHandler1;
                 this.Relations.CollectionChanged += schemaChangedHandler1;
+                if ((this.DetermineSchemaSerializationMode(info, context) == global::System.Data.SchemaSerializationMode.ExcludeSchema)) {
+                    this.InitExpressions();
+                }
                 return;
             }
             string strSchema = ((string)(info.GetValue("XmlSchema", typeof(string))));
@@ -82,6 +88,7 @@ namespace ManyToMany {
             }
             else {
                 this.ReadXmlSchema(new global::System.Xml.XmlTextReader(new global::System.IO.StringReader(strSchema)));
+                this.InitExpressions();
             }
             this.GetSerializationData(info, context);
             global::System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler = new global::System.ComponentModel.CollectionChangeEventHandler(this.SchemaChanged);
@@ -163,6 +170,7 @@ namespace ManyToMany {
         public override global::System.Data.DataSet Clone() {
             DataSet1 cln = ((DataSet1)(base.Clone()));
             cln.InitVars();
+            cln.InitExpressions();
             cln.SchemaSerializationMode = this.SchemaSerializationMode;
             return cln;
         }
@@ -248,6 +256,7 @@ namespace ManyToMany {
             }
             this.relationFK_Product_ProductPart = this.Relations["FK_Product_ProductPart"];
             this.relationFK_Part_ProductPart = this.Relations["FK_Part_ProductPart"];
+            this.relationFK_Product_Part = this.Relations["FK_Product_Part"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -258,7 +267,7 @@ namespace ManyToMany {
             this.Namespace = "http://tempuri.org/DataSet1.xsd";
             this.EnforceConstraints = true;
             this.SchemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
-            this.tableProduct = new ProductDataTable();
+            this.tableProduct = new ProductDataTable(false);
             base.Tables.Add(this.tableProduct);
             this.tableProductPart = new ProductPartDataTable();
             base.Tables.Add(this.tableProductPart);
@@ -279,6 +288,13 @@ namespace ManyToMany {
             fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
             fkc.UpdateRule = global::System.Data.Rule.Cascade;
+            fkc = new global::System.Data.ForeignKeyConstraint("FK_Product_Part", new global::System.Data.DataColumn[] {
+                        this.tableProduct.IDColumn}, new global::System.Data.DataColumn[] {
+                        this.tablePart.ProductIDColumn});
+            this.tablePart.Constraints.Add(fkc);
+            fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
+            fkc.DeleteRule = global::System.Data.Rule.Cascade;
+            fkc.UpdateRule = global::System.Data.Rule.Cascade;
             this.relationFK_Product_ProductPart = new global::System.Data.DataRelation("FK_Product_ProductPart", new global::System.Data.DataColumn[] {
                         this.tableProduct.IDColumn}, new global::System.Data.DataColumn[] {
                         this.tableProductPart.ProductIDColumn}, false);
@@ -288,6 +304,11 @@ namespace ManyToMany {
                         this.tablePart.IDColumn}, new global::System.Data.DataColumn[] {
                         this.tableProductPart.PartIDColumn}, false);
             this.Relations.Add(this.relationFK_Part_ProductPart);
+            this.relationFK_Product_Part = new global::System.Data.DataRelation("FK_Product_Part", new global::System.Data.DataColumn[] {
+                        this.tableProduct.IDColumn}, new global::System.Data.DataColumn[] {
+                        this.tablePart.ProductIDColumn}, false);
+            this.relationFK_Product_Part.Nested = true;
+            this.Relations.Add(this.relationFK_Product_Part);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -363,6 +384,12 @@ namespace ManyToMany {
             return type;
         }
         
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        private void InitExpressions() {
+            this.Product.NumberOfPartsColumn.Expression = "count(child(FK_Product_Part).ID)";
+        }
+        
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         public delegate void ProductRowChangeEventHandler(object sender, ProductRowChangeEvent e);
         
@@ -383,12 +410,23 @@ namespace ManyToMany {
             
             private global::System.Data.DataColumn columnName;
             
+            private global::System.Data.DataColumn columnNumberOfParts;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public ProductDataTable() {
+            public ProductDataTable() : 
+                    this(false) {
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public ProductDataTable(bool initExpressions) {
                 this.TableName = "Product";
                 this.BeginInit();
                 this.InitClass();
+                if ((initExpressions == true)) {
+                    this.InitExpressions();
+                }
                 this.EndInit();
             }
             
@@ -434,6 +472,14 @@ namespace ManyToMany {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn NumberOfPartsColumn {
+                get {
+                    return this.columnNumberOfParts;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -469,11 +515,25 @@ namespace ManyToMany {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public ProductRow AddProductRow(string Name, int NumberOfParts) {
+                ProductRow rowProductRow = ((ProductRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        null,
+                        Name,
+                        NumberOfParts};
+                rowProductRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowProductRow);
+                return rowProductRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public ProductRow AddProductRow(string Name) {
                 ProductRow rowProductRow = ((ProductRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
-                        Name};
+                        Name,
+                        null};
                 rowProductRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowProductRow);
                 return rowProductRow;
@@ -505,6 +565,7 @@ namespace ManyToMany {
             internal void InitVars() {
                 this.columnID = base.Columns["ID"];
                 this.columnName = base.Columns["Name"];
+                this.columnNumberOfParts = base.Columns["NumberOfParts"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -514,6 +575,8 @@ namespace ManyToMany {
                 base.Columns.Add(this.columnID);
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnName);
+                this.columnNumberOfParts = new global::System.Data.DataColumn("NumberOfParts", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNumberOfParts);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnID}, true));
                 this.columnID.AutoIncrement = true;
@@ -521,6 +584,7 @@ namespace ManyToMany {
                 this.columnID.AutoIncrementStep = -1;
                 this.columnID.AllowDBNull = false;
                 this.columnID.Unique = true;
+                this.columnNumberOfParts.ReadOnly = true;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -539,6 +603,12 @@ namespace ManyToMany {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             protected override global::System.Type GetRowType() {
                 return typeof(ProductRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            private void InitExpressions() {
+                this.NumberOfPartsColumn.Expression = "count(child(FK_Product_Part).ID)";
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -938,6 +1008,8 @@ namespace ManyToMany {
             
             private global::System.Data.DataColumn columnName;
             
+            private global::System.Data.DataColumn columnProductID;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public PartDataTable() {
@@ -989,6 +1061,14 @@ namespace ManyToMany {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn ProductIDColumn {
+                get {
+                    return this.columnProductID;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1024,11 +1104,15 @@ namespace ManyToMany {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public PartRow AddPartRow(string Name) {
+            public PartRow AddPartRow(string Name, ProductRow parentProductRowByFK_Product_Part) {
                 PartRow rowPartRow = ((PartRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
-                        Name};
+                        Name,
+                        null};
+                if ((parentProductRowByFK_Product_Part != null)) {
+                    columnValuesArray[2] = parentProductRowByFK_Product_Part[0];
+                }
                 rowPartRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPartRow);
                 return rowPartRow;
@@ -1060,6 +1144,7 @@ namespace ManyToMany {
             internal void InitVars() {
                 this.columnID = base.Columns["ID"];
                 this.columnName = base.Columns["Name"];
+                this.columnProductID = base.Columns["ProductID"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1069,6 +1154,8 @@ namespace ManyToMany {
                 base.Columns.Add(this.columnID);
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnName);
+                this.columnProductID = new global::System.Data.DataColumn("ProductID", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnProductID);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnID}, true));
                 this.columnID.AutoIncrement = true;
@@ -1245,6 +1332,22 @@ namespace ManyToMany {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int NumberOfParts {
+                get {
+                    try {
+                        return ((int)(this[this.tableProduct.NumberOfPartsColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'NumberOfParts\' in table \'Product\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProduct.NumberOfPartsColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsNameNull() {
                 return this.IsNull(this.tableProduct.NameColumn);
             }
@@ -1257,12 +1360,35 @@ namespace ManyToMany {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsNumberOfPartsNull() {
+                return this.IsNull(this.tableProduct.NumberOfPartsColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetNumberOfPartsNull() {
+                this[this.tableProduct.NumberOfPartsColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public ProductPartRow[] GetProductPartRows() {
                 if ((this.Table.ChildRelations["FK_Product_ProductPart"] == null)) {
                     return new ProductPartRow[0];
                 }
                 else {
                     return ((ProductPartRow[])(base.GetChildRows(this.Table.ChildRelations["FK_Product_ProductPart"])));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public PartRow[] GetPartRows() {
+                if ((this.Table.ChildRelations["FK_Product_Part"] == null)) {
+                    return new PartRow[0];
+                }
+                else {
+                    return ((PartRow[])(base.GetChildRows(this.Table.ChildRelations["FK_Product_Part"])));
                 }
             }
         }
@@ -1369,6 +1495,33 @@ namespace ManyToMany {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int ProductID {
+                get {
+                    try {
+                        return ((int)(this[this.tablePart.ProductIDColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ProductID\' in table \'Part\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePart.ProductIDColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public ProductRow ProductRow {
+                get {
+                    return ((ProductRow)(this.GetParentRow(this.Table.ParentRelations["FK_Product_Part"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["FK_Product_Part"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsNameNull() {
                 return this.IsNull(this.tablePart.NameColumn);
             }
@@ -1377,6 +1530,18 @@ namespace ManyToMany {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetNameNull() {
                 this[this.tablePart.NameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsProductIDNull() {
+                return this.IsNull(this.tablePart.ProductIDColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetProductIDNull() {
+                this[this.tablePart.ProductIDColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

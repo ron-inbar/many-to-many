@@ -34,6 +34,7 @@
             this.productsGroupBox = new System.Windows.Forms.GroupBox();
             this.productDataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.productNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.productBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dataSet1 = new ManyToMany.DataSet1();
             this.productBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
@@ -51,6 +52,7 @@
             this.partsGroupBox = new System.Windows.Forms.GroupBox();
             this.partDataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.partNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.partBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.partBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
@@ -65,8 +67,7 @@
             this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.partBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
-            this.partNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.productNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NumberOfParts = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -119,7 +120,8 @@
             this.productDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.productDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn2,
-            this.productNameColumn});
+            this.productNameColumn,
+            this.NumberOfParts});
             this.productDataGridView.DataSource = this.productBindingSource;
             this.productDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.productDataGridView.Location = new System.Drawing.Point(3, 41);
@@ -133,6 +135,12 @@
             this.dataGridViewTextBoxColumn2.DataPropertyName = "ID";
             this.dataGridViewTextBoxColumn2.HeaderText = "ID";
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            // 
+            // productNameColumn
+            // 
+            this.productNameColumn.DataPropertyName = "Name";
+            this.productNameColumn.HeaderText = "Name";
+            this.productNameColumn.Name = "productNameColumn";
             // 
             // productBindingSource
             // 
@@ -290,6 +298,12 @@
             this.dataGridViewTextBoxColumn1.HeaderText = "ID";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             // 
+            // partNameColumn
+            // 
+            this.partNameColumn.DataPropertyName = "Name";
+            this.partNameColumn.HeaderText = "Name";
+            this.partNameColumn.Name = "partNameColumn";
+            // 
             // partBindingSource
             // 
             this.partBindingSource.DataMember = "Part";
@@ -419,17 +433,12 @@
             this.partBindingNavigatorSaveItem.Size = new System.Drawing.Size(23, 22);
             this.partBindingNavigatorSaveItem.Text = "Save Data";
             // 
-            // partNameColumn
+            // NumberOfParts
             // 
-            this.partNameColumn.DataPropertyName = "Name";
-            this.partNameColumn.HeaderText = "Name";
-            this.partNameColumn.Name = "partNameColumn";
-            // 
-            // productNameColumn
-            // 
-            this.productNameColumn.DataPropertyName = "Name";
-            this.productNameColumn.HeaderText = "Name";
-            this.productNameColumn.Name = "productNameColumn";
+            this.NumberOfParts.DataPropertyName = "NumberOfParts";
+            this.NumberOfParts.HeaderText = "# Parts";
+            this.NumberOfParts.Name = "NumberOfParts";
+            this.NumberOfParts.ReadOnly = true;
             // 
             // MainForm
             // 
@@ -503,6 +512,7 @@
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator5;
         private System.Windows.Forms.DataGridViewTextBoxColumn productNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn partNameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NumberOfParts;
     }
 }
 
